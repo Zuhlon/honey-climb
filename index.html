@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Мёдом намазано! 🐝</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #1a3e1f, #2b5e2b);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+        }
+        .game-container {
+            max-width: 500px;
+            width: 100%;
+            background: #f5e6b2;
+            background-image: radial-gradient(circle at 20% 40%, #ffd966 3px, transparent 3px), 
+                              radial-gradient(circle at 80% 70%, #ffd966 2px, transparent 3px);
+            background-size: 30px 30px;
+            border-radius: 60px 60px 30px 30px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.5);
+            padding: 16px 12px 20px;
+            border: 6px solid #d4a017;
+            position: relative;
+        }
+        .hive-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #f6c445;
+            padding: 12px 15px;
+            border-radius: 50px 50px 25px 25px;
+            margin-bottom: 15px;
+            border-bottom: 5px solid #b47c10;
+            color: #2d1e05;
+            font-weight: bold;
+            font-size: 1rem;
+            text-shadow: 1px 1px 0 #ffeaa5;
+            position: relative;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .hive-header span:first-child {
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+        }
+        .stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .stat {
+            background: #2d1e05;
+            color: #ffdb8a;
+            padding: 4px 10px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 2px solid #efb810;
+            font-size: 0.9rem;
+        }
+        /* Дихлофосная банка */
+        .dichlorvos-can {
+            position: absolute;
+            top: -8px;
+            right: 15px;
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(145deg, #ccd5d9, #b0b7bc);
+            border-radius: 18px 18px 12px 12px;
+            border: 3px solid #2d1e05;
+            box-shadow: 0 4px 0 #5e3a0c, 0 8px 12px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 4px;
+            font-weight: bold;
+            color: #2d1e05;
+            transform: rotate(5deg);
+            z-index: 50;
+        }
+        .can-label {
+            position: absolute;
+            top: -8px;
+            left: 3px;
+            background: #ff4136;
+            color: white;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 15px;
+            border: 1px solid #2d1e05;
+            font-weight: bold;
+            transform: rotate(-5deg);
+            white-space: nowrap;
+        }
+        .can-liquid {
+            width: 85%;
+            height: 0%;
+            background: linear-gradient(145deg, #ffd966, #ffb700);
+            border-radius: 6px;
+            margin-bottom: 3px;
+            transition: height 0.3s ease;
+            border: 1px solid #8b5a00;
+            box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .can-liquid::after {
+            content: "☠️";
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+        }
+        .can-percent {
+            font-size: 9px;
+            background: #2d1e05;
+            color: #ffd966;
+            padding: 1px 4px;
+            border-radius: 12px;
+            margin-bottom: 3px;
+            border: 1px solid #ffb82e;
+        }
+        .beehive-core {
+            background: #cea776;
+            background-image: repeating-linear-gradient(60deg, #ba8c4a 0px, #ba8c4a 3px, #dcb165 3px, #dcb165 8px);
+            border-radius: 150px 150px 60px 60px;
+            padding: 15px 12px;
+            border: 8px solid #7a4f1a;
+            box-shadow: inset 0 0 0 3px #fce492, inset 0 0 15px #362007;
+            margin-bottom: 15px;
+            position: relative;
+            margin-top: 35px;
+        }
+        .bee-desks {
+            background: #6b3f00;
+            padding: 12px 8px;
+            border-radius: 60px 60px 30px 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            border: 3px solid #a87b3a;
+            box-shadow: inset 0 0 0 2px #ffcf7a;
+            margin: 6px 0;
+            min-height: 80px;
+        }
+        .operator-bee {
+            background: #ffbf00;
+            width: 45px;
+            height: 45px;
+            border-radius: 50% 50% 40% 40%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 0 #8b5a00, 0 6px 8px black;
+            border: 2px solid #2d1e05;
+            position: relative;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+        .operator-bee::after {
+            content: "🐝";
+            font-size: 28px;
+            line-height: 1;
+        }
+        .operator-bee.stolen {
+            background: #4a3a2a;
+            box-shadow: 0 3px 0 #2a1e12;
+            filter: grayscale(0.8);
+            opacity: 0.7;
+            transform: scale(0.9);
+        }
+        .operator-bee.stolen::after {
+            content: "💨";
+            font-size: 24px;
+        }
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+            margin-bottom: 12px;
+            align-items: center;
+            position: relative;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: #ffb82e;
+            border: none;
+            border-bottom: 6px solid #a05e15;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px 16px;
+            border-radius: 50px;
+            color: #2b1b04;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            transition: 0.07s;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #5e3a0c;
+            flex: 1 1 auto;
+            min-width: 120px;
+            position: relative;
+            touch-action: manipulation;
+        }
+        .btn span {
+            font-size: 11px;
+            background: #2d1e05;
+            color: #ffd98c;
+            padding: 3px 10px;
+            border-radius: 25px;
+            white-space: nowrap;
+        }
+        .btn .key-hint {
+            position: absolute;
+            top: -8px;
+            right: -5px;
+            background: #2d1e05;
+            color: #ffd966;
+            border: 2px solid #ffb82e;
+            border-radius: 18px;
+            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 0 #5e3a0c;
+        }
+        .btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #5e3a0c;
+            border-bottom-width: 2px;
+        }
+        .btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(0.6);
+        }
+        /* Красная кнопка дихлофоса */
+        .dichlorvos-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #c41e1e);
+            border: 4px solid #2d1e05;
+            box-shadow: 0 5px 0 #5e3a0c, 0 8px 15px black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.07s;
+            position: relative;
+            margin-left: 5px;
+            touch-action: manipulation;
+        }
+        .dichlorvos-button span {
+            font-size: 9px;
+            background: #2d1e05;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 15px;
+            margin-top: 2px;
+        }
+        .dichlorvos-button .key-hint-red {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ffd966;
+            color: #c41e1e;
+            border: 2px solid #c41e1e;
+            border-radius: 18px;
+            padding: 2px 6px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 0 #5e3a0c;
+        }
+        .dichlorvos-button:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #5e3a0c;
+        }
+        .dichlorvos-button.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(0.7);
+            box-shadow: 0 3px 0 #5e3a0c;
+            transform: translateY(3px);
+        }
+        .clients-queue {
+            background: #b48b4a;
+            padding: 10px;
+            border-radius: 40px 40px 15px 15px;
+            margin-top: 15px;
+            border: 4px solid #fad67e;
+            color: #1a2c0e;
+        }
+        .queue-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 15px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        .client-badge {
+            background: #fcedb3;
+            padding: 5px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 3px;
+            border: 2px solid #85682b;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 0 #6b4a1a;
+            position: relative;
+            overflow: hidden;
+        }
+        .timer-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #27ae60, #f1c40f, #e67e22, #e74c3c);
+            width: 100%;
+            transition: width 0.2s linear;
+            border-radius: 0 0 30px 30px;
+        }
+        .hazard {
+            background: #433222;
+            color: #dab066;
+            padding: 8px;
+            border-radius: 25px;
+            border-left: 6px solid #d13939;
+            margin: 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .hornet-icon {
+            font-size: 28px;
+            animation: buzz 0.2s infinite alternate;
+        }
+        @keyframes buzz {
+            from { transform: translateX(-1px) rotate(-2deg); }
+            to { transform: translateX(1px) rotate(2deg); }
+        }
+        .achievement {
+            background: #d4b47c;
+            border-radius: 40px;
+            padding: 8px 12px;
+            border: 3px solid #ab7b2b;
+            font-weight: bold;
+            color: #1e2e0a;
+            margin-top: 10px;
+            text-align: center;
+            transition: 0.3s;
+            font-size: 13px;
+        }
+        .achievement.unlocked {
+            background: #ffd966;
+            border-color: #c99700;
+            color: #2d1e05;
+            box-shadow: 0 0 12px gold;
+        }
+        .small-note {
+            font-size: 11px;
+            color: #1f2e0a;
+        }
+        .warning {
+            color: #ff9f1c;
+            font-weight: bold;
+        }
+        .cost-highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .profit-highlight {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .keyboard-shortcut {
+            display: none; /* Скрываем на мобилках */
+        }
+        .timer-bar-container {
+            width: 100%;
+            background: #2d1e05;
+            border-radius: 8px;
+            margin-top: 3px;
+            height: 8px;
+            border: 1px solid #ffb82e;
+        }
+        .timer-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 8px;
+            transition: width 0.5s linear;
+        }
+        /* Попап окончания игры */
+        .game-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+        .game-overlay.active {
+            display: flex;
+        }
+        .popup {
+            background: #f5e6b2;
+            border: 8px solid #d4a017;
+            border-radius: 50px;
+            padding: 25px 20px;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 15px 25px black;
+        }
+        .popup h2 {
+            font-size: 26px;
+            color: #2d1e05;
+            margin: 10px 0;
+        }
+        .popup p {
+            font-size: 18px;
+            color: #2d1e05;
+            margin-bottom: 20px;
+        }
+        .popup .bee {
+            font-size: 60px;
+            margin: 15px 0;
+        }
+        .restart-btn {
+            background: #ffb82e;
+            border: none;
+            border-bottom: 6px solid #a05e15;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: #2b1b04;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #5e3a0c;
+            margin-top: 15px;
+            width: 100%;
+            touch-action: manipulation;
+        }
+        .restart-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #5e3a0c;
+            border-bottom-width: 2px;
+        }
+        .footer-note {
+            text-align: center;
+            color: #3a5a1a;
+            margin-top: 10px;
+            font-style: italic;
+            font-size: 11px;
+        }
+        #queueMessages {
+            min-height: 50px;
+            font-size: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="hive-header">
+            <div class="header-top">
+                <span>🐝 "МЁДОМ НАМАЗАНО!"</span>
+                <div class="stats">
+                    <div class="stat">🍯 <span id="balanceValue">5.00</span></div>
+                    <div class="stat">📞 <span id="queueLength">0</span></div>
+                </div>
+            </div>
+            <!-- БАНКА ДИХЛОФОСА -->
+            <div class="dichlorvos-can" id="dichlorvosCan">
+                <div class="can-label">☠️</div>
+                <div class="can-percent" id="dichlorvosPercent">100%</div>
+                <div class="can-liquid" id="dichlorvosLiquid" style="height: 100%;"></div>
+                <div class="timer-bar-container">
+                    <div class="timer-fill" id="dichlorvosTimerFill" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="beehive-core">
+            <!-- операторы -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <span style="background:#2a1c03; padding:4px 12px; border-radius: 25px; color: #ffdcaa; font-size: 13px;">
+                    🐝 пчёлы
+                </span>
+                <span style="background:#281907; padding:4px 12px; border-radius: 25px; color: #ffb86b; font-size: 13px;" id="hiredCountDisplay">
+                    👥 3
+                </span>
+            </div>
+            <div class="bee-desks" id="operatorsGrid">
+                <!-- операторы генерируются js -->
+            </div>
+
+            <!-- очередь клиентов с таймерами -->
+            <div class="clients-queue">
+                <div class="queue-title">
+                    <span>📨 Входящие танцы:</span>
+                </div>
+                <div id="queueMessages">
+                    <!-- очередь клиентов -->
+                </div>
+            </div>
+
+            <!-- шершни -->
+            <div class="hazard" id="hornetSection">
+                <span class="hornet-icon">🐝💢</span>
+                <div style="flex:1">
+                    <div style="font-weight: bold;">🪵 ШЕРШНИ</div>
+                    <div style="font-size: 12px;" id="hornetEffect">воруют пчёл!</div>
+                </div>
+                <span id="hornetCountdown" style="background: #631c1c; padding: 4px 10px; border-radius: 30px; color: #ffae70; font-weight: bold; font-size: 13px;">
+                    ⚔️ 0
+                </span>
+            </div>
+        </div>
+
+        <!-- ТРИ КНОПКИ -->
+        <div class="control-panel">
+            <button class="btn" id="btnHire">
+                🐝 Нанять<br>
+                <span>-1🍯</span>
+                <span class="key-hint">Я</span>
+            </button>
+            <button class="btn" id="btnAnswer">
+                📞 Ответить<br>
+                <span class="cost-highlight">-0.1</span> <span class="profit-highlight">+0.3</span>
+                <span class="key-hint">Ю</span>
+            </button>
+            <!-- КРАСНАЯ КНОПКА ДИХЛОФОСА -->
+            <div class="dichlorvos-button" id="dichlorvosBtn">
+                ☠️
+                <span>дым</span>
+                <span class="key-hint-red">Х</span>
+            </div>
+        </div>
+
+        <!-- ДОСТИЖЕНИЯ -->
+        <div class="achievement" id="achievementArea">
+            🏆 ДОСТИЖЕНИЯ
+            <div id="achievementDesc" style="font-size: 12px; margin-top: 4px;">
+                ⚖️ кредиты = пчёлам • 10🍯 = +🐝
+            </div>
+        </div>
+        <div class="footer-note">
+            🐝 ответь за 3 сек • +0.3 за звонок • Х - дихлофос
+        </div>
+    </div>
+
+    <!-- ПОПАП ОКОНЧАНИЯ ИГРЫ -->
+    <div class="game-overlay" id="gameOverlay">
+        <div class="popup">
+            <div class="bee">🐝💔</div>
+            <h2>Колл-центр закрыт!</h2>
+            <p>Попробуйте ещё раз, создайте свою империю танцующих пчёл!</p>
+            <button class="restart-btn" id="restartBtn">🍯 Начать заново</button>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            // ---------- СОСТОЯНИЕ ИГРЫ ----------
+            let balance = 5.00;
+            let operators = 3;
+            let clientQueue = [];
+            
+            // Шершни
+            let hornetActive = false;
+            let hornetDuration = 0;
+            let hornetTimer = null;
+            
+            // Ачивменты
+            let achievementUnlocked = false;
+            let honeyAchievementUnlocked = false;
+            
+            // Дихлофос
+            let dichlorvosCharge = 100;
+            let dichlorvosReady = true;
+            let chargeInterval = null;
+            
+            // Таймеры звонков
+            let callTimerInterval = null;
+            
+            // ---------- КЛИЕНТЫ ----------
+            const clientTypes = [
+                { name: '🏙️ Парниковый', emoji: '🏙️', value: 0.30 },
+                { name: '🌿 Липовый', emoji: '🌿', value: 0.30 },
+                { name: '🌲 Еловый', emoji: '🌲', value: 0.30 },
+                { name: '🐝 Майя', emoji: '🌸', value: 0.30 },
+                { name: '🐝 Вика', emoji: '💐', value: 0.30 },
+                { name: '🍯 Магазин', emoji: '🛒', value: 0.30 },
+                { name: '📈 Биржа', emoji: '📈', value: 0.30 },
+                { name: '🪵 Дуб.роща', emoji: '🪵', value: 0.30 },
+                { name: '🌸 Поляна', emoji: '🌺', value: 0.30 },
+                { name: '🏠 Улей', emoji: '🏠', value: 0.30 }
+            ];
+            
+            // ---------- ЭЛЕМЕНТЫ ----------
+            const balanceEl = document.getElementById('balanceValue');
+            const queueLengthEl = document.getElementById('queueLength');
+            const operatorsGridEl = document.getElementById('operatorsGrid');
+            const queueMessagesEl = document.getElementById('queueMessages');
+            const hiredCountDisplay = document.getElementById('hiredCountDisplay');
+            const hornetCountdownEl = document.getElementById('hornetCountdown');
+            const achievementDesc = document.getElementById('achievementDesc');
+            const hornetEffectEl = document.getElementById('hornetEffect');
+            const achievementArea = document.getElementById('achievementArea');
+            const btnHire = document.getElementById('btnHire');
+            const btnAnswer = document.getElementById('btnAnswer');
+            const dichlorvosBtn = document.getElementById('dichlorvosBtn');
+            const dichlorvosLiquid = document.getElementById('dichlorvosLiquid');
+            const dichlorvosPercent = document.getElementById('dichlorvosPercent');
+            const dichlorvosTimerFill = document.getElementById('dichlorvosTimerFill');
+            const gameOverlay = document.getElementById('gameOverlay');
+            const restartBtn = document.getElementById('restartBtn');
+            
+            // ---------- ФУНКЦИИ ----------
+            function renderOperators() {
+                let html = '';
+                for (let i = 0; i < operators; i++) {
+                    html += `<div class="operator-bee" title="оператор #${i+1}"></div>`;
+                }
+                operatorsGridEl.innerHTML = html;
+                hiredCountDisplay.innerText = `👥 ${operators}`;
+            }
+            
+            function renderQueue() {
+                if (clientQueue.length === 0) {
+                    queueMessagesEl.innerHTML = '<span style="font-size: 16px; color: #5e4a2b;">💤 тишина...</span>';
+                } else {
+                    let items = clientQueue.map((c) => {
+                        let timeLeftPercent = (c.timeLeft / 3) * 100;
+                        if (timeLeftPercent < 0) timeLeftPercent = 0;
+                        
+                        return `<span class="client-badge">
+                            ${c.emoji} ${c.name}
+                            <div class="timer-bar" style="width: ${timeLeftPercent}%;"></div>
+                        </span>`;
+                    }).join('');
+                    queueMessagesEl.innerHTML = items;
+                }
+                queueLengthEl.innerText = clientQueue.length;
+            }
+            
+            // ТАЙМЕРЫ ЗВОНКОВ
+            function startCallTimers() {
+                if (callTimerInterval) clearInterval(callTimerInterval);
+                
+                callTimerInterval = setInterval(() => {
+                    let expiredCalls = [];
+                    
+                    clientQueue.forEach((call, index) => {
+                        call.timeLeft -= 0.1;
+                        if (call.timeLeft <= 0) {
+                            expiredCalls.push(index);
+                        }
+                    });
+                    
+                    for (let i = expiredCalls.length - 1; i >= 0; i--) {
+                        const index = expiredCalls[i];
+                        balance -= 0.01;
+                        if (balance < 0) balance = 0;
+                        clientQueue.splice(index, 1);
+                    }
+                    
+                    renderQueue();
+                    updateUI();
+                }, 100);
+            }
+            
+            function updateDichlorvosUI() {
+                dichlorvosLiquid.style.height = dichlorvosCharge + '%';
+                dichlorvosPercent.innerText = Math.floor(dichlorvosCharge) + '%';
+                
+                if (!dichlorvosReady) {
+                    dichlorvosTimerFill.style.width = dichlorvosCharge + '%';
+                } else {
+                    dichlorvosTimerFill.style.width = '100%';
+                }
+                
+                dichlorvosBtn.classList.toggle('disabled', !dichlorvosReady);
+            }
+            
+            function startDichlorvosCharge() {
+                dichlorvosReady = false;
+                dichlorvosCharge = 0;
+                updateDichlorvosUI();
+                
+                if (chargeInterval) clearInterval(chargeInterval);
+                
+                chargeInterval = setInterval(() => {
+                    if (dichlorvosCharge < 100) {
+                        dichlorvosCharge += 1;
+                        if (dichlorvosCharge > 100) dichlorvosCharge = 100;
+                        updateDichlorvosUI();
+                        
+                        if (dichlorvosCharge >= 100) {
+                            dichlorvosReady = true;
+                            dichlorvosCharge = 100;
+                            updateDichlorvosUI();
+                            clearInterval(chargeInterval);
+                            chargeInterval = null;
+                        }
+                    }
+                }, 600);
+            }
+            
+            function useDichlorvos() {
+                if (!dichlorvosReady) {
+                    alert('☠️ Заряжается!');
+                    return;
+                }
+                
+                if (!hornetActive) {
+                    alert('🐝 Нет шершней');
+                    return;
+                }
+                
+                hornetActive = false;
+                hornetDuration = 0;
+                if (hornetTimer) {
+                    clearInterval(hornetTimer);
+                    hornetTimer = null;
+                }
+                
+                dichlorvosReady = false;
+                dichlorvosCharge = 0;
+                startDichlorvosCharge();
+                updateUI();
+            }
+            
+            function checkGameOver() {
+                if (operators <= 0 && balance < 1.00) {
+                    gameOverlay.classList.add('active');
+                    return true;
+                }
+                return false;
+            }
+            
+            function checkAchievements() {
+                if (!achievementUnlocked && operators > 0 && Math.abs(balance - operators) < 0.06) {
+                    achievementUnlocked = true;
+                    achievementArea.classList.add('unlocked');
+                    balance += 3.00;
+                    operators += 2;
+                    alert('🏆 СУПЕР! +3🍯 +2🐝');
+                }
+                
+                if (!honeyAchievementUnlocked && balance >= 10.00) {
+                    honeyAchievementUnlocked = true;
+                    operators++;
+                    alert('🍯 10 КРЕДИТОВ! +🐝');
+                }
+            }
+            
+            function triggerHornet() {
+                if (hornetActive) return;
+                
+                hornetActive = true;
+                hornetDuration = 10;
+                
+                if (operators > 0) {
+                    operators--;
+                }
+                
+                hornetTimer = setInterval(() => {
+                    if (!hornetActive) return;
+                    
+                    if (operators > 0) operators--;
+                    
+                    hornetDuration -= 2;
+                    
+                    if (hornetDuration <= 0 || operators <= 0) {
+                        hornetActive = false;
+                        hornetDuration = 0;
+                        clearInterval(hornetTimer);
+                        hornetTimer = null;
+                    }
+                    updateUI();
+                }, 2000);
+                
+                updateUI();
+            }
+            
+            function updateUI() {
+                balance = Math.round(balance * 100) / 100;
+                balanceEl.innerText = balance.toFixed(2);
+                
+                renderOperators();
+                renderQueue();
+                
+                hornetCountdownEl.innerText = hornetActive ? `⚔️ ${Math.ceil(hornetDuration)}с` : '⚔️ 0';
+                hornetEffectEl.innerHTML = hornetActive ? '<span class="warning">⚠️ ВОРУЮТ!</span>' : '🪹 спят';
+                
+                checkAchievements();
+                
+                btnAnswer.classList.toggle('disabled', balance < 0.10 || operators <= 0);
+                btnHire.classList.toggle('disabled', balance < 1.00);
+                
+                updateDichlorvosUI();
+                checkGameOver();
+            }
+            
+            function spawnClient() {
+                if (clientQueue.length > 10) return;
+                const randomIndex = Math.floor(Math.random() * clientTypes.length);
+                clientQueue.push({ 
+                    ...clientTypes[randomIndex], 
+                    id: Date.now() + Math.random(),
+                    timeLeft: 3.0
+                });
+                renderQueue();
+            }
+            
+            function gameTick() {
+                if (Math.random() < 0.65) spawnClient();
+                if (!hornetActive && Math.random() < 0.3) triggerHornet();
+                updateUI();
+            }
+            
+            function hireBee() {
+                if (balance >= 1.00) {
+                    balance -= 1.00;
+                    operators++;
+                    if (operators > 20) operators = 20;
+                    updateUI();
+                }
+            }
+            
+            function answerCall() {
+                if (operators <= 0) {
+                    alert('👻 Нет пчёл!');
+                    return;
+                }
+                if (clientQueue.length === 0) {
+                    alert('📭 Нет звонков');
+                    return;
+                }
+                if (balance < 0.10) {
+                    alert('💰 Нужно 0.10');
+                    return;
+                }
+                
+                clientQueue.shift();
+                balance -= 0.10;
+                balance += 0.30;
+                
+                updateUI();
+            }
+            
+            function restartGame() {
+                balance = 5.00;
+                operators = 3;
+                clientQueue = [];
+                hornetActive = false;
+                hornetDuration = 0;
+                achievementUnlocked = false;
+                honeyAchievementUnlocked = false;
+                achievementArea.classList.remove('unlocked');
+                
+                dichlorvosReady = true;
+                dichlorvosCharge = 100;
+                
+                if (hornetTimer) clearInterval(hornetTimer);
+                if (window.gameInterval) clearInterval(window.gameInterval);
+                if (chargeInterval) clearInterval(chargeInterval);
+                if (callTimerInterval) clearInterval(callTimerInterval);
+                
+                for (let i = 0; i < 3; i++) spawnClient();
+                
+                startCallTimers();
+                renderOperators();
+                updateUI();
+                
+                window.gameInterval = setInterval(gameTick, 2500);
+                gameOverlay.classList.remove('active');
+            }
+            
+            // Привязка обработчиков
+            btnHire.addEventListener('click', hireBee);
+            btnAnswer.addEventListener('click', answerCall);
+            dichlorvosBtn.addEventListener('click', useDichlorvos);
+            restartBtn.addEventListener('click', restartGame);
+            
+            // Старт
+            restartGame();
+            
+            // Очистка
+            window.addEventListener('beforeunload', function() {
+                if (window.gameInterval) clearInterval(window.gameInterval);
+                if (hornetTimer) clearInterval(hornetTimer);
+                if (chargeInterval) clearInterval(chargeInterval);
+                if (callTimerInterval) clearInterval(callTimerInterval);
+            });
+        })();
+    </script>
+</body>
+</html>
